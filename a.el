@@ -62,7 +62,8 @@ removed"
   (remove (assoc key alist) alist))
 
 (defun a-put (alist &rest kv-pairs)
-  "Returns a copy of ALIST with KEY set to VALUE"
+  "Returns a copy of ALIST with KEY set to VALUE, or if multiple
+key-value pairs are passed in, all will be set in the returned alist."
   (a--assert-even-list kv-pairs)
   (a-into alist (-partition 2 kv-pairs)))
 
