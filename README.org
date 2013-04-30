@@ -1,0 +1,43 @@
+* a.el
+
+a.el is a small collection of utility functions for dealing with
+alists in elisp and Emacs.
+
+** Status
+
+Some of the initial functions that you might expect, like:
+  - =a-put= : put an element into an alist
+  - =a-get= : get an element from an alist
+  - =a-remove= : remove an element from an alist
+  - =a-get-in= : get an element from within an nested alist structure
+  - =a-keys= : get a list of the keys for the alist
+  - =a-vals= : get a list of the vals in the alist
+  - =a-merge= : merge multiple alists
+  - =a-into= : turn a list of lists into an alist
+
+* Installation
+
+a.el is still a work-in-progress and can currently only be installed
+by hand.  Once it has received a little breaking in it will be added
+to Marmalade and Melpa for easier installation.
+
+** Manually
+
+Download a.el and put it somewhere in the Emacs load path.  Put the
+following in your init.el or .emacs file:
+
+#+BEGIN_SRC emacs-lisp
+(require 'a)
+#+END_SRC
+
+a.el requires the dash.el library located at:
+[[https://github.com/magnars/dash.el]]
+
+* License
+Copyright © 2013 David Leatherman.
+
+Files are licensed under the same license as Emacs unless otherwise
+specified. See the file LICENSE for details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
