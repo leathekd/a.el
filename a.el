@@ -48,14 +48,13 @@ even number of elements"
 
 (defun a-into (alist list-of-lists)
   "Converts a list of lists into an alist"
-  (when (a--assert-even-list alist)
-    (-reduce-from (lambda (alst kv)
-                    (cons
-                     ;; make into a dotted pair
-                     (cons (car kv) (cadr kv))
-                     (a-remove alst (car kv))))
-                  alist
-                  list-of-lists)))
+  (-reduce-from (lambda (alst kv)
+                  (cons
+                   ;; make into a dotted pair
+                   (cons (car kv) (cadr kv))
+                   (a-remove alst (car kv))))
+                alist
+                list-of-lists))
 
 (defun a-remove (alist key)
   "Returns a copy of ALIST with the element associates with KEY
@@ -64,8 +63,8 @@ removed"
 
 (defun a-put (alist &rest kv-pairs)
   "Returns a copy of ALIST with KEY set to VALUE"
-  (when (a--assert-even-list kv-pairs)
-      (a-into alist kv-pairs)))
+  (a--assert-even-list kv-pairs)
+  (a-into alist (-partition 2 kv-pairs)))
 
 (defun a-get (alist key &optional not-found)
   "Return the value associated with KEY in the ALIST or nil if the key
