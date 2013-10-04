@@ -67,6 +67,15 @@ key-value pairs are passed in, all will be set in the returned alist."
   (a--assert-even-list kv-pairs)
   (a-into alist (-partition 2 kv-pairs)))
 
+(defun a-put-in (alist ks v)
+  "Puts a value into a nested alist structure and returns it.
+KS is a list of keys, V is the value to insert."
+  (let ((k (car ks))
+        (ks (cdr ks)))
+    (if ks
+        (a-put alist k (a-put-in (a-get alist k) ks v))
+      (a-put alist k v))))
+
 (defun a-get (alist key &optional not-found)
   "Return the value associated with KEY in the ALIST or nil if the key
 is not found.  Optionally return NOT-FOUND rather than nil when the
