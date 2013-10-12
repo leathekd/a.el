@@ -46,21 +46,6 @@ even number of elements"
       t
     (error "a-put requires an equal number of keys to values")))
 
-(defun a-into (alist list-of-lists)
-  "Converts a list of lists into an alist"
-  (-reduce-from (lambda (alst kv)
-                  (cons
-                   ;; make into a dotted pair
-                   (cons (car kv) (cadr kv))
-                   (a-remove alst (car kv))))
-                alist
-                list-of-lists))
-
-(defun a-remove (alist key)
-  "Returns a copy of ALIST with the element associates with KEY
-removed"
-  (remove (assoc key alist) alist))
-
 (defun a-put (alist &rest kv-pairs)
   "Returns a copy of ALIST with KEY set to VALUE, or if multiple
 key-value pairs are passed in, all will be set in the returned alist."
@@ -87,6 +72,11 @@ key is not present."
 not-found value if the key is not present."
   (or (-reduce-from 'a-get alist key-list) not-found))
 
+(defun a-remove-key (alist key)
+  "Returns a copy of ALIST with the element associates with KEY
+removed"
+  (assq-delete-all key alist))
+
 (defun a-keys (alist)
   "Return the list of keys in ALIST"
   (mapcar 'car alist))
@@ -94,6 +84,36 @@ not-found value if the key is not present."
 (defun a-vals (alist)
   "Return the list of values in ALIST"
   (mapcar 'cdr alist))
+
+(defun a-remove (alist pred-fn)
+  "Returns a copy of ALIST with any element whose value causes PRED-FN
+to return true"
+  (delq nil
+        (mapcar
+         (lambda (pair)
+           (unless (funcall pred-fn (cdr pair))
+             pair))
+         alist)))
+
+(defun a-filter (alist pred-fn)
+  "Returns a copy of ALIST with any element whose value causes PRED-FN
+to return false"
+  (delq nil
+        (mapcar
+         (lambda (pair)
+           (when (funcall pred-fn (cdr pair))
+             pair))
+         alist)))
+
+(defun a-into (alist list-of-lists)
+  "Converts a list of lists into an alist"
+  (-reduce-from (lambda (alst kv)
+                  (cons
+                   ;; make into a dotted pair
+                   (cons (car kv) (cadr kv))
+                   (a-remove alst (car kv))))
+                alist
+                list-of-lists))
 
 (defun a-merge (&rest alists)
   "Merge the elements of the passed alists.  Works from left to right,
@@ -107,10 +127,20 @@ elements with the same keys that appear earlier."
       alist2))
    alists))
 
-;; TODO?
-;; merge-with
-;; maybe a destructuring let
-;; mapkeys and mapvals
+(defun a-merge-with (func &rest alists)
+  "Returns an alist that consists of the rest of the alists joined
+onto the first.  If a key occurs in more than one map, the mapping(s)
+from the latter (left-to-right) will be combined with the mapping in
+the result by calling (func val-in-result val-in-latter)."
+  (let ((merge-entry (lambda (m e)
+                       (let ((k (car e))
+                             (v (cdr e)))
+                         (if (a-get m k)
+                             (a-put m k (funcall func (a-get m k) v))
+                           (assoc m k v)))))
+        (merge2 (lambda (m1 m2)
+                  (-reduce-from merge-entry m1 m2))))
+    (-reduce merge2 alists)))
 
 (provide 'a)
 
