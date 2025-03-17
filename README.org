@@ -1,3 +1,8 @@
+*NO LONGER DEVELOPED* This was just an experimental library that I didn't 
+end up continuing to develop.  Maybe check 
+[[https://github.com/emacs-tw/awesome-elisp/blob/master/README.org#maps][here]] 
+for alternatives.  Good luck!
+
 * a.el
 
 a.el is a small collection of utility functions for dealing with
